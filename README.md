@@ -3,7 +3,7 @@
 ## how to use
 
 ```bash
-go run .
+go run . 18080
 ```
 
 Open another terminal, run below.
@@ -16,9 +16,9 @@ curl -i http://localhost:18080/World
 
 ```http
 HTTP/1.1 200 OK
-Date: Thu, 09 Apr 2026 12:41:30 GMT
-Content-Length: 58
+Date: Wed, 29 Apr 2026 08:26:29 GMT
+Content-Length: 12
 Content-Type: text/plain; charset=utf-8
 
-Hello, World.
+Hello k20ku!
 ```
