@@ -20,7 +20,7 @@ func TestRun(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to listen port: %v", err)
 	}
-	// run the server with a cancel context in another proess
+	// run the server with a cancel context in another process
 	ctx, cancel := context.WithCancel(context.Background())
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
