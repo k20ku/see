@@ -6,9 +6,11 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/http/httputil"
 	"testing"
 	"time"
 
+	"github.com/k20ku/see/client"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -30,16 +32,28 @@ func TestRun(t *testing.T) {
 	// this test client send http request
 	in := "World"
 	url := fmt.Sprintf("http://%s/%s", l.Addr().String(), in)
-	// どんなポートでlistenしているのかログ
+	user_agent := "SeeTestBot/0.1"
+	client := client.NewUAClient(user_agent)
+
 	t.Logf("try request to %q", url)
 	// wait enough time for the server to start
 	time.Sleep(100 * time.Millisecond)
-	resp, err := http.Get(url)
+
+	// prepare the request
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if req_raw, err := httputil.DumpRequest(req, true); err == nil {
+		t.Log("Request:", "\n", (string)(req_raw))
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		t.Fatalf("failed to get: %+v", err)
 	}
 	defer resp.Body.Close()
 
+	if resp_raw, err := httputil.DumpResponse(resp, true); err == nil {
+		t.Log("Response:", "\n", (string)(resp_raw))
+	}
 	// get the response from the server which started at step.1
 	got, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -47,7 +61,7 @@ func TestRun(t *testing.T) {
 	}
 
 	// validate the gotten http response
-	want := fmt.Sprintf("Hello %s!", in)
+	want := fmt.Sprintf("Hello %s!\nYour User-Agent: %s\n", in, user_agent)
 	if string(got) != want {
 		t.Errorf("unexpected response, want=%q, got=%q", want, got)
 	}

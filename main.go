@@ -17,7 +17,7 @@ func run(ctx context.Context, l net.Listener) error {
 		// Addrフィールドは使用しない
 		// Addr: server's port addr will be injected from the given net.Listener as args
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "Hello %s!", r.URL.Path[1:])
+			fmt.Fprintf(w, "Hello %s!\nYour User-Agent: %s\n", r.URL.Path[1:], r.Header.Get("User-Agent"))
 			log.Printf("see server: accepted request from %s.\n", r.URL.Path[1:])
 		}),
 	}
