@@ -3,7 +3,7 @@
 ## how to use
 
 ```bash
-go run . 18080
+go run . localhost 18080
 ```
 
 Open another terminal, run below.
