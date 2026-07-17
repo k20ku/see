@@ -1,0 +1,30 @@
+services:
+  app-deploy:
+    image: see
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deploy
+    command: ["80"]
+    ports:
+      - "80:80"
+    environment:
+      - APP_ENV=deploy
+
+  app-dev:
+    image: see-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    command: ["80"]
+    ports:
+      - "18080:80"
+    environment:
+      - APP_ENV=dev
+
+
+volumes:
+  go-build-cache:
+  go-mod-cache:
+
