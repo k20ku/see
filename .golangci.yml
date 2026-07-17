@@ -1,22 +1,39 @@
-linter-settings:
-  govet:
-    check-shadowing: false
-  gocyclo:
-    min-complexity: 30
-  misspell:
-    locale: US
+# https://golangci-lint.run/docs/configuration/file/
+version: "2"
 
 linters:
+  default: none
   disable-all: true
   enable:
-    - goimports
-    - deadcode
-    - errcheck
-    - gocognit
-    - gocritic
-    - gocyclo
-    - gofmt
+    # bug check
+    # - errcheck
     - govet
-    - misspell
     - staticcheck
-    - whitespace
+    # - ineffassign
+    # - unused
+    # - bodyclose
+    # - errorlint
+    # quality check
+    # - gocritic
+    # - revive
+    # # complexity
+    # - gocognit
+    # - gocyclo
+    # # style
+    # - misspell
+    # - whitespace
+
+#   settings:
+#     gocognit:
+#       min-complexity: 30
+#     gocyclo:
+#       min-complexity: 30
+#     misspell:
+#       locale: uses
+#     revive:
+#       comfidence: 0.8
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports

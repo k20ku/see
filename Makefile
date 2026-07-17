@@ -16,7 +16,7 @@ build-local: ## build docker image to local development
 .PHONY: up
 up: ## Do docker compose
 
-	docker compose up -d
+	docker compose up -d app-dev
 
 .PHONY: logs
 logs: ## Tail docker compose logs
@@ -32,6 +32,21 @@ ps: ## Check container status
 .tests: ## Execute tests
 
 	go test -race -shuffle=on ./...
+
+
+# Code Quality
+.PHONY: fmt
+fmt: ## Format codes
+
+	golangci-lint fmt
+
+.PHONY: lint
+lint: ## Lint code
+
+	golangci-lint run
+
+.PHONY: check
+check: fmt lint tests ## Check code quality
 
 .PHONY: help
 help: ## Show options

@@ -1,19 +1,40 @@
+name: Test
+
 on:
   push:
     branches:
-      - 'milestone/CI'
       - 'dev'
       - 'main'
   pull_request:
-name: test
+
+permissions:
+  contests: read
+  pull-request: read
+
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-go@v6
-        with:
-          go-version: '>=1.25'
-      - uses: actions/checkout@v6
-      - run: go test ./... -coverprofile=coverage.out
-      - name: report coverage
-        uses: k1LoW/octocov-action@v1
+  name: Go Test
+  runs-on: ubuntu-latest
+  timeout-minutes: 10
+
+  steps:
+    - name: Checkout source
+      uses: actions/checkout@v6
+
+    - name: Setup Go
+      uses: actions/setup-go@v6
+      with:
+        go-version: '1.26'
+        cache: true
+    
+    - name: Download dependencies
+      run: go mod Download
+    
+    - name: Verify modules
+      run: go mod Verify
+    
+    - name: Run tests
+      run: go test -race  -covermode=atomic -coverprofile=coverage.out ./...
+
+    - name: Report coverage
+      uses: k1LoW/octocov-action@v1
