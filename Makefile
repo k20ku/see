@@ -16,7 +16,7 @@ build-local: ## build docker image to local development
 .PHONY: up
 up: ## Do docker compose
 
-	docker compose up -d --build
+	docker compose up -d
 
 .PHONY: logs
 logs: ## Tail docker compose logs
