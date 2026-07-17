@@ -14,7 +14,7 @@ build-local: ## build docker image to local development
 	docker compose build --no-cache app-dev
 
 .PHONY: up
-up: ## Do docker compose up
+up: ## Do docker compose up for development
 
 	docker compose up -d app-dev
 
@@ -34,7 +34,7 @@ ps: ## Check container status
 	docker compose ps
 
 .PHONY: tests
-.tests: ## Execute tests
+tests: ## Execute tests
 
 	go test -race -shuffle=on ./...
 

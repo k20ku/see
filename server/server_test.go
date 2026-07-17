@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"context"
@@ -10,66 +10,70 @@ import (
 	"testing"
 	"time"
 
-	"github.com/k20ku/see/client"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sync/errgroup"
 )
 
-func TestRun(t *testing.T) {
-	t.Skip("In Refattoring...")
+func TestServerRun(t *testing.T) {
 	// init the TCP Listener for See Server
 	// ポート番号0を指定すると，ポート番号は自動的に設定される
 	// ポート番号が固定されていると，他のAppがそのポートを使ってる場合競合が起きるため
 	l, err := net.Listen("tcp", "localhost:0")
 	require.NoErrorf(t, err, "failed to listen on port %d", 0)
+
 	// run the server with a cancel context in another process
 	ctx, cancel := context.WithCancel(context.Background())
-	eg, ctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		return run(ctx)
+
+	// init server
+	mux := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, err := fmt.Fprintf(w, "Hello %s!", r.URL.Path[1:]); err != nil {
+			t.Logf("failed to respond to %s: %v", r.URL.Path, err)
+		}
 	})
 
-	// this test client send http request
+	// run server
+	srv := NewServer(l, mux)
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return srv.Run(ctx)
+	})
+
+	// this test client send http GET request
 	in := "World"
 	url := fmt.Sprintf("http://%s/%s", l.Addr().String(), in)
-	user_agent := "SeeTestBot/0.1"
-	client := client.NewUAClient(user_agent)
+	client := http.Client{Timeout: 60 * time.Second}
 
 	t.Logf("try request to %q", url)
 	// wait enough time for the server to start
 	time.Sleep(100 * time.Millisecond)
 
-	// prepare the request
+	// request
 	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if req_raw, err := httputil.DumpRequest(req, true); err == nil {
-		t.Log("Request:", "\n", (string)(req_raw))
-	}
+	require.NoError(t, err, "prepare GET request")
+	rawReq, err := httputil.DumpRequest(req, true)
+	require.NoError(t, err, "dump request: %s", rawReq)
 
 	resp, err := client.Do(req)
-	if err != nil {
-		t.Fatalf("failed to get: %+v", err)
-	}
-	defer resp.Body.Close()
+	require.NoError(t, err, "client sends request")
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			t.Log("resp.Body failed to close")
+		}
+	}()
 
-	if resp_raw, err := httputil.DumpResponse(resp, true); err == nil {
-		t.Log("Response:", "\n", (string)(resp_raw))
-	}
+	respRaw, err := httputil.DumpResponse(resp, true)
+	require.NoErrorf(t, err, "client recieved the response: %s", respRaw)
 	// get the response from the server which started at step.1
 	got, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatalf("failed to read body: %+v", err)
-	}
+	require.NoError(t, err, "read response body")
 
 	// validate the gotten http response
-	want := fmt.Sprintf("Hello %s!\nYour User-Agent: %s\n", in, user_agent)
-	if string(got) != want {
-		t.Errorf("unexpected response, want=%q, got=%q", want, got)
-	}
+	want := fmt.Sprintf("Hello %s!", in)
+	require.Equal(t, string(got), want, "validate gotten response")
 
 	// send a cancel signal to server in background
 	cancel()
-	// Did server successfully shutdown?
-	if err := eg.Wait(); err != nil {
-		t.Fatalf("server failed to succesefully shutdown: %+v", err)
-	}
+
+	err = eg.Wait()
+	require.NoError(t, err, "shutdown server")
 }
