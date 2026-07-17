@@ -11,12 +11,17 @@ build: ## build doker image to deploy
 .PHONY: build-local
 build-local: ## build docker image to local development
 
-	docker compose build --no-cache
+	docker compose build --no-cache app-dev
 
 .PHONY: up
-up: ## Do docker compose
+up: ## Do docker compose up
 
 	docker compose up -d app-dev
+
+.PHONY: down
+down: ## Do docker compose down
+
+	docker compose down
 
 .PHONY: logs
 logs: ## Tail docker compose logs
