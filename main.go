@@ -14,13 +14,13 @@ func run(ctx context.Context) error {
 	// init config
 	cfg, err := config.New()
 	if err != nil {
-		return fmt.Errorf("see server get config: %v", err)
+		return fmt.Errorf("see server get config: %w", err)
 	}
 
 	// listen on port
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Port))
 	if err != nil {
-		return fmt.Errorf("see server: failed to listen on port %d: %v", cfg.Port, err)
+		return fmt.Errorf("see server: failed to listen on port %d: %w", cfg.Port, err)
 	}
 
 	mux := server.NewMux()
