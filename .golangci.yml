@@ -6,13 +6,13 @@ linters:
   disable-all: true
   enable:
     # bug check
-    # - errcheck
+    - errcheck
     - govet
     - staticcheck
-    # - ineffassign
+    - ineffassign
     # - unused
-    # - bodyclose
-    # - errorlint
+    - bodyclose
+    - errorlint
     # quality check
     # - gocritic
     # - revive

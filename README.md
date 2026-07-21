@@ -3,7 +3,8 @@
 ## how to use
 
 ```bash
-go run . localhost 18080
+make build
+docker run -p 18080:80 k20ku/see:latest
 ```
 
 Open another terminal, run below.
@@ -23,3 +24,19 @@ Content-Type: text/plain; charset=utf-8
 Hello World!
 Your User-Agent: curl/8.5.0
 ```
+
+## Futures
+
+- Graceful Shutdown
+
+    ```bash
+    docker run -p 28080:80 k20ku/see:latest
+    ```
+
+    Even if we send `SIGINT` immediately after server have received request, server exits after sending the response.
+
+    ```log
+    2026/07/17 13:50:25 see server: listen on port 80
+    2026/07/17 13:50:26 see server: accepted request from hello.
+    ^C2026/07/17 13:50:31 see server responds to hello.
+    ```

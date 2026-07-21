@@ -3,7 +3,6 @@ name: Test
 on:
   push:
     branches:
-      - 'dev'
       - 'main'
   pull_request:
 
@@ -28,10 +27,10 @@ jobs:
         cache: true
     
     - name: Download dependencies
-      run: go mod Download
+      run: go mod download
     
     - name: Verify modules
-      run: go mod Verify
+      run: go mod verify
     
     - name: Run tests
       run: go test -race  -covermode=atomic -coverprofile=coverage.out ./...
