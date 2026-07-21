@@ -31,7 +31,7 @@ logs: ## Tail docker compose logs
 .PHONY: ps
 ps: ## Check container status
 
-	docker compose ps
+	docker compose ps -a
 
 .PHONY: tests
 tests: ## Execute tests
