@@ -9,7 +9,6 @@ type Item struct {
 	Title      string    `json:"title"`
 	Url        string    `json:"url"`
 	ModifiedAt time.Time `json:"modifiedAt"`
-	LastSeenAt time.Time `json:"lastSeenAt"`
 	CreatedAt  time.Time `json:"createdAt"`
 }
 
