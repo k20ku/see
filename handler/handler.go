@@ -21,13 +21,13 @@ func RespondJSON(ctx context.Context, w http.ResponseWriter, body any, status in
 			Message: http.StatusText(http.StatusInternalServerError),
 		}
 		if err := json.NewEncoder(w).Encode(resp); err != nil {
-			return fmt.Errorf("write error response error: %v", err)
+			return fmt.Errorf("write error response error: %w", err)
 		}
 		return nil
 	}
 	w.WriteHeader(status)
 	if _, err := fmt.Fprintf(w, "%s", bodyBytes); err != nil {
-		return fmt.Errorf("write response error: %v", err)
+		return fmt.Errorf("write response error: %w", err)
 	}
 
 	return nil
