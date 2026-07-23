@@ -20,7 +20,7 @@ type AddItem struct {
 func (ai *AddItem) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var b struct {
-		Title string `json:"title" validate:"required"`
+		Title string `json:"title"`
 		Url   string `json:"url" validate:"required"`
 	}
 

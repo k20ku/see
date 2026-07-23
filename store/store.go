@@ -27,13 +27,12 @@ func (is *ItemStore) Add(i *entity.Item) (entity.ItemId, error) {
 	return i.Id, nil
 }
 
-// Returns all items, which are sorted by Id
 func (is *ItemStore) All() entity.Items {
-	is.mu.RLocker()
+	is.mu.RLock()
 	defer is.mu.RUnlock()
 
 	items := make([]*entity.Item, len(is.Items))
-	for i, item := range items {
+	for i, item := range is.Items {
 		items[i-1] = item
 	}
 	return items

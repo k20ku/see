@@ -36,4 +36,5 @@ func main() {
 	if err := run(ctx); err != nil {
 		log.Fatalf("see server failed to terminate: %s", err)
 	}
+	log.Println("see server: gracefully shutdown")
 }
