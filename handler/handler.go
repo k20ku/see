@@ -43,7 +43,7 @@ func RespondJSON(ctx context.Context, w http.ResponseWriter, status int, body an
 	}
 	w.WriteHeader(status)
 	if _, err := fmt.Fprintf(w, "%s", bodyBytes); err != nil {
-		return fmt.Errorf("write response error: %v", err)
+		return fmt.Errorf("write response error: %w", err)
 	}
 	return nil
 }
@@ -66,7 +66,7 @@ func RespondErrValidation(ctx context.Context, w http.ResponseWriter, err error)
 	var ve validator.ValidationErrors
 
 	if errors.As(err, &ve) {
-		details := make([]FieldError, len(ve))
+		details := make([]FieldError, 0, len(ve))
 		for _, fe := range ve {
 			details = append(details, FieldError{
 				Field: fe.Field(),
@@ -75,7 +75,7 @@ func RespondErrValidation(ctx context.Context, w http.ResponseWriter, err error)
 		}
 		er := ErrResponse{Error: Error{
 			Code:    ErrValidation,
-			Message: "validation failed",
+			Message: "Validation Failed",
 			Details: details,
 		}}
 
@@ -85,7 +85,6 @@ func RespondErrValidation(ctx context.Context, w http.ResponseWriter, err error)
 		log.Printf("err validation unknown error: %v", ve)
 		return
 	}
-
 }
 
 func RespondErrInternal(ctx context.Context, w http.ResponseWriter) {
