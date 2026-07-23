@@ -7,7 +7,7 @@ on:
   pull_request:
 
 permissions:
-  contests: read
+  contents: read
   pull-request: read
 
 jobs:
