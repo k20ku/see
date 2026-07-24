@@ -16,7 +16,7 @@ build-local: ## build docker image to local development
 .PHONY: up
 up: ## Do docker compose up for development
 
-	docker compose up -d app-dev
+	docker compose up app-dev
 
 .PHONY: down
 down: ## Do docker compose down
