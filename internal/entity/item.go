@@ -8,6 +8,7 @@ type Item struct {
 	Id         ItemId    `json:"id"`
 	Title      string    `json:"title"`
 	Url        string    `json:"url"`
+	Note       string    `json:"note"`
 	ModifiedAt time.Time `json:"modifiedAt"`
 	CreatedAt  time.Time `json:"createdAt"`
 }

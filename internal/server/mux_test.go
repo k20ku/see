@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/k20ku/see/testutil"
+	"github.com/k20ku/see/internal/testutil"
 )
 
 func TestNewMux(t *testing.T) {

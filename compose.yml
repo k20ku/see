@@ -1,5 +1,6 @@
 services:
   app-deploy:
+    profiles: ["deploy"]
     image: see
     build:
       context: .
@@ -12,6 +13,7 @@ services:
       PORT: 80
 
   app-dev:
+    profiles: ["dev"]
     image: see-dev
     build:
       context: .
@@ -22,9 +24,28 @@ services:
     environment:
       SEE_ENV: dev
       PORT: 8080
+      SEE_DB_HOST: see-db
+      SEE_DB_PORT: 5432
+      SEE_DB_USER: see
+      SEE_DB_PASSWORD: seedbpass
+      SEE_DB_DATABASE: see
+    depends_on:
+      - see-db
 
+  see-db:
+    image: postgres:18
+    container_name: see-db
+    ports:
+      - 54321:5432
+    environment:
+      POSTGRES_USER: see
+      POSTGRES_PASSWORD: seedbpass
+      POSTGRES_DB: see
+    volumes:
+      - see-db-data:/var/lib/postgresql
 
 volumes:
   go-build-cache:
   go-mod-cache:
+  see-db-data:
 

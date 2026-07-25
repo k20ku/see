@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/k20ku/see/entity"
-	"github.com/k20ku/see/store"
+	"github.com/k20ku/see/internal/entity"
+	"github.com/k20ku/see/internal/store"
 )
 
 type ListItem struct {

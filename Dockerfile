@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 \
     go build \
         -trimpath \
         -ldflags="-s -w" \
-        -o app .
+        -o app ./cmd/server/
 
 # 
 FROM golang:1.26-bookworm AS dev

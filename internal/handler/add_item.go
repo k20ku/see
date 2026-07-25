@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/k20ku/see/entity"
-	"github.com/k20ku/see/store"
+	"github.com/k20ku/see/internal/entity"
+	"github.com/k20ku/see/internal/store"
 )
 
 type AddItem struct {

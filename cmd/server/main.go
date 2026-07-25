@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 
-	"github.com/k20ku/see/config"
-	"github.com/k20ku/see/server"
+	"github.com/k20ku/see/internal/config"
+	"github.com/k20ku/see/internal/server"
 )
 
 func run(ctx context.Context) error {

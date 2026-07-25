@@ -4,25 +4,25 @@
 
 ```bash
 make build
-docker run -p 18080:80 k20ku/see:latest
+make up
 ```
 
 Open another terminal, run below.
 
 ```bash
-curl -i http://localhost:18080/World
+curl -i -XGET localhost:18080/health
 ```
 
 ### Response
 
 ```http
+$ curl -i -w"\n" -XGET localhost:18080/health
 HTTP/1.1 200 OK
-Date: Fri, 08 May 2026 18:59:38 GMT
-Content-Length: 41
-Content-Type: text/plain; charset=utf-8
+Content-Type: application/json; charset=utf-8
+Date: Fri, 24 Jul 2026 14:19:41 GMT
+Content-Length: 17
 
-Hello World!
-Your User-Agent: curl/8.5.0
+{"status" : "ok"}
 ```
 
 ## Futures

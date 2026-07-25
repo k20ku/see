@@ -1,61 +1,74 @@
 .DEFAULT_GOAL := help
 
 DOKERTAG := latest
+GOBIN := $(CURDIR)/tools/bin
+
+# Build
 
 .PHONY: build
-build: ## build doker image to deploy
+build: ## build docker image to local development
+	docker compose build --no-cache --profile dev
 
+.PHONY: build-deploy
+build-deploy: ## build doker image to deploy
 	docker build -t k20ku/see:${DOKERTAG} \
 		--target deploy ./
 
-.PHONY: build-local
-build-local: ## build docker image to local development
-
-	docker compose build --no-cache app-dev
-
 .PHONY: up
 up: ## Do docker compose up for development
-
-	docker compose up app-dev
+	docker compose --profile dev up
 
 .PHONY: down
 down: ## Do docker compose down
-
-	docker compose down
+	docker compose --profile dev down
 
 .PHONY: logs
 logs: ## Tail docker compose logs
-
 	docker compose logs -f
 
 .PHONY: ps
 ps: ## Check container status
-
 	docker compose ps -a
+
+# Tool Install
+
+.PHONY: tools
+tools: ## Install tools
+	@mkdir -p $(GOBIN)
+	GOBIN=$(GOBIN) go install tool
+	GOBIN=$(GOBIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	@echo "install golangci-lint"
+	curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(GOBIN) v2.12.2
+
+# DB
+
+.PHONY: migrate
+migrate: ## Migration
+	./tools/bin/migrate -database "postgres://see:seedbpass@localhost:54321/see?sslmode=disable" -path db/migrations up
+
+.PHONY: immigrate
+immigrate: ## Immigration
+	./tools/bin/migrate -database "postgres://see:seedbpass@localhost:54321/see?sslmode=disable" -path db/migrations down
+# Code Quality
 
 .PHONY: tests
 tests: ## Execute tests
-
 	go test -race -shuffle=on ./...
 
-
-# Code Quality
 .PHONY: fmt
 fmt: ## Format codes
-
-	golangci-lint fmt
+	GOBIN=$(GOBIN) golangci-lint fmt
 
 .PHONY: lint
 lint: ## Lint code
-
-	golangci-lint run
+	GOBIN=$(GOBIN) golangci-lint run
 
 .PHONY: check
 check: fmt lint tests ## Check code quality
 
+# Help
 .PHONY: help
 help: ## Show options
-	
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| sort \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

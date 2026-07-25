@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/k20ku/see/entity"
+	"github.com/k20ku/see/internal/entity"
 )
 
 var (
