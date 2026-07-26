@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/k20ku/see/internal/entity"
+	"github.com/k20ku/see/internal/respond"
 	"github.com/k20ku/see/internal/store"
 )
 
@@ -27,12 +28,13 @@ func (ai *AddItem) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(&b); err != nil {
-		RespondErrInvalidJson(ctx, w)
+		respond.InvalidJSONError(ctx, w)
 		return
 	}
 
+	// TODO: validator is exposed
 	if err := ai.Validate.Struct(b); err != nil {
-		RespondErrValidation(ctx, w, err)
+		respond.ValidationError(ctx, w, err)
 		return
 	}
 
@@ -44,16 +46,16 @@ func (ai *AddItem) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ModifiedAt: now,
 	}
 
-	id, err := store.Items.Add(item)
+	id, err := ai.Store.Add(item)
 	if err != nil {
-		RespondErrInternal(ctx, w)
+		respond.InternalServerError(ctx, w)
 		return
 	}
 
 	resp := struct {
 		ID entity.ItemId `json:"id"`
 	}{ID: id}
-	if err := RespondJSON(ctx, w, http.StatusOK, resp); err != nil {
+	if err := respond.JSON(ctx, w, http.StatusOK, resp); err != nil {
 		log.Printf("add item response failed :%v", err)
 	}
 }

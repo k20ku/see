@@ -4,14 +4,12 @@ import (
 	"bytes"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
-	"strings"
 	"testing"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/k20ku/see/internal/entity"
 	"github.com/k20ku/see/internal/store"
 	"github.com/k20ku/see/internal/testutil"
+	"github.com/k20ku/see/internal/validate"
 )
 
 func TestAddItem(t *testing.T) {
@@ -62,21 +60,11 @@ func TestAddItem(t *testing.T) {
 				bytes.NewReader(testutil.LoadFile(t, tt.reqFile)),
 			)
 
-			validate := validator.New()
-			validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
-				name, _, _ := strings.Cut(fld.Tag.Get("json"), ",")
-				// skip if tag key says it should be ignored
-				if name == "-" {
-					return ""
-				}
-				return name
-			})
-
 			sut := AddItem{
 				Store: &store.ItemStore{
 					Items: map[entity.ItemId]*entity.Item{},
 				},
-				Validate: validate,
+				Validate: validate.New(),
 			}
 
 			sut.ServeHTTP(w, r)

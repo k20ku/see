@@ -55,7 +55,5 @@ func (s *Server) Run(ctx context.Context) error {
 		return err
 	}
 
-	// Goメソッドで起動した別ゴルーチンの終了を待つ
-	// wait for the another Goroutine to terminate which handles the incoming http request
 	return eg.Wait()
 }

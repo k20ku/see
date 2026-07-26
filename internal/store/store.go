@@ -8,7 +8,6 @@ import (
 )
 
 var (
-	Items       = &ItemStore{Items: map[entity.ItemId]*entity.Item{}}
 	ErrNotFound = errors.New("not found")
 )
 
@@ -16,6 +15,10 @@ type ItemStore struct {
 	mu     sync.RWMutex
 	LastId entity.ItemId
 	Items  map[entity.ItemId]*entity.Item
+}
+
+func New() *ItemStore {
+	return &ItemStore{Items: map[entity.ItemId]*entity.Item{}}
 }
 
 func (is *ItemStore) Add(i *entity.Item) (entity.ItemId, error) {

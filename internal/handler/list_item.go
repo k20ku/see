@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/k20ku/see/internal/entity"
+	"github.com/k20ku/see/internal/respond"
 	"github.com/k20ku/see/internal/store"
 )
 
@@ -29,7 +30,7 @@ func (li *ListItem) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Url:   itm.Url,
 		})
 	}
-	if err := RespondJSON(ctx, w, http.StatusOK, rsp); err != nil {
+	if err := respond.JSON(ctx, w, http.StatusOK, rsp); err != nil {
 		log.Printf("list item failed to respond: %v", err)
 	}
 }

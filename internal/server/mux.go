@@ -2,13 +2,11 @@ package server
 
 import (
 	"net/http"
-	"reflect"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-playground/validator/v10"
 	"github.com/k20ku/see/internal/handler"
 	"github.com/k20ku/see/internal/store"
+	"github.com/k20ku/see/internal/validate"
 )
 
 func NewMux() http.Handler {
@@ -17,18 +15,10 @@ func NewMux() http.Handler {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		_, _ = w.Write([]byte(`{"status" : "ok"}`))
 	})
-	v := validator.New()
-	v.RegisterTagNameFunc(func(fld reflect.StructField) string {
-		name, _, _ := strings.Cut(fld.Tag.Get("json"), ",")
-		// skip if tag key says it should be ignored
-		if name == "-" {
-			return ""
-		}
-		return name
-	})
-	ai := &handler.AddItem{Store: store.Items, Validate: v}
+	store := store.New()
+	ai := &handler.AddItem{Store: store, Validate: validate.New()}
 	mux.Post("/items", ai.ServeHTTP)
-	li := &handler.ListItem{Store: store.Items}
+	li := &handler.ListItem{Store: store}
 	mux.Get("/items", li.ServeHTTP)
 	return mux
 }
