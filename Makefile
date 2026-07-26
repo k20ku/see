@@ -44,11 +44,11 @@ tools: ## Install tools
 
 .PHONY: migrate
 migrate: ## Migration
-	./tools/bin/migrate -database "postgres://see:seedbpass@localhost:54321/see?sslmode=disable" -path db/migrations up
+	$(GOBIN)/migrate -database "postgres://see:seedbpass@localhost:54321/see?sslmode=disable" -path db/migrations up
 
 .PHONY: immigrate
 immigrate: ## Immigration
-	./tools/bin/migrate -database "postgres://see:seedbpass@localhost:54321/see?sslmode=disable" -path db/migrations down
+	$(GOBIN)/migrate -database "postgres://see:seedbpass@localhost:54321/see?sslmode=disable" -path db/migrations down
 # Code Quality
 
 .PHONY: tests
