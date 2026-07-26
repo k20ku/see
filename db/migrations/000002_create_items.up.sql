@@ -6,4 +6,4 @@ CREATE TABLE items (
     created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT item_id PRIMARY KEY (id)
-)
+);

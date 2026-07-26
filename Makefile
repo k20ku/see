@@ -37,10 +37,9 @@ tools: ## Install tools
 	@mkdir -p $(GOBIN)
 	GOBIN=$(GOBIN) go install tool
 	GOBIN=$(GOBIN) go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	GOBIN=$(GOBIN) go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 	@echo "install golangci-lint"
 	curl -sSfL https://golangci-lint.run/install.sh | sh -s -- -b $(GOBIN) v2.12.2
-
-# DB
 
 .PHONY: migrate
 migrate: ## Migration
@@ -49,6 +48,11 @@ migrate: ## Migration
 .PHONY: immigrate
 immigrate: ## Immigration
 	$(GOBIN)/migrate -database "postgres://see:seedbpass@localhost:54321/see?sslmode=disable" -path db/migrations down
+
+.PHONY: sqlgen
+sqlgen: ## Generate GO code from SQL
+	$(GOBIN)/sqlc generate
+
 # Code Quality
 
 .PHONY: tests

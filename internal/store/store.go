@@ -7,9 +7,7 @@ import (
 	"github.com/k20ku/see/internal/entity"
 )
 
-var (
-	ErrNotFound = errors.New("not found")
-)
+var ErrNotFound = errors.New("not found")
 
 type ItemStore struct {
 	mu     sync.RWMutex
